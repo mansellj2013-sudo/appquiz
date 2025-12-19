@@ -1,0 +1,51 @@
+[
+  {
+    "_id": {
+      "$oid": "6938592ae0d9e523ea2f04a6"
+    },
+    "question": "What is the primary function of the Auxiliary Steam System?",
+    "choices": [
+      "To provide steam for the main turbine.",
+      "To provide saturated steam to service various auxiliary loads.",
+      "To provide steam for the boiler feed water pumps.",
+      "To provide steam for the superheater."
+    ],
+    "answer_key": 1,
+    "knowledge_area": "auxiliary_systems",
+    "system_id": "auxiliary_steam",
+    "created_at": {
+      "$date": "2025-12-09T12:15:22.257Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6938592ae0d9e523ea2f04a7"
+    },
+    "question": "Which component regulates pressure in the system?",
+    "choices": [
+      "Pressure gauge",
+      "Pressure relief valve",
+      "Check valve",
+      "Gate valve"
+    ],
+    "answer_key": 1,
+    "knowledge_area": "control_systems",
+    "system_id": "pressure_control",
+    "created_at": {
+      "$date": "2025-12-09T12:15:23.257Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6938592ae0d9e523ea2f04a8"
+    },
+    "question": "What is the normal operating temperature for the main steam line?",
+    "choices": ["250°C", "350°C", "450°C", "550°C"],
+    "answer_key": 2,
+    "knowledge_area": "steam_systems",
+    "system_id": "steam_line",
+    "created_at": {
+      "$date": "2025-12-09T12:15:24.257Z"
+    }
+  }
+]

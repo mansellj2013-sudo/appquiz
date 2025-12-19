@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <title>Simple Quiz</title>
+  </head>
+  <body>
+    <div class="quizContainer">
+      <h1>Quiz Application</h1>
+      <% if (knowledgeArea) { %> <% const displayName =
+      knowledgeArea.split('_').map(word => word.charAt(0).toUpperCase() +
+      word.slice(1)).join(' '); %>
+      <p class="knowledge-area-badge">
+        Knowledge Area: <strong><%= displayName %></strong>
+      </p>
+      <% } %> <% if (totalQuestions === 0) { %>
+      <div class="no-data">
+        <p>No questions found for this knowledge area.</p>
+        <a href="/" class="btn btn-reset">Back to Selection</a>
+      </div>
+      <% } else { %>
+      <form method="POST" action="/submit">
+        <input
+          type="hidden"
+          name="knowledgeArea"
+          value="<%= knowledgeArea || '' %>"
+        />
+        <input type="hidden" name="systemId" value="<%= systemId || '' %>" />
+
+        <% questions.forEach((question, index) => { %>
+        <div class="question">
+          <h3>Question <%= index + 1 %> of <%= totalQuestions %></h3>
+          <p class="question-text"><%= question.question %></p>
+
+          <div class="answers">
+            <% Object.keys(question.choices).forEach(index => { %> <% const
+            letterIndex = ['a', 'b', 'c', 'd'][index]; %>
+            <label class="answer-label">
+              <input
+                type="radio"
+                name="question_<%= question.id %>"
+                value="<%= index %>"
+                required
+              />
+              <span class="answer-letter"
+                ><%= letterIndex.toUpperCase() %>:</span
+              >
+              <%= question.choices[index] %>
+            </label>
+            <% }); %>
+          </div>
+        </div>
+        <% }); %>
+
+        <div class="button-group">
+          <button type="submit" class="btn btn-submit">Submit Quiz</button>
+          <a href="/" class="btn btn-reset">Back to Selection</a>
+        </div>
+      </form>
+      <% } %>
+    </div>
+  </body>
+</html>

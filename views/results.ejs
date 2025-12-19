@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <title>Quiz Results</title>
+  </head>
+  <body>
+    <div class="quizContainer">
+      <h1>Quiz Results</h1>
+      <% if (knowledgeArea) { %> <% const displayName =
+      knowledgeArea.split('_').map(word => word.charAt(0).toUpperCase() +
+      word.slice(1)).join(' '); %>
+      <p class="knowledge-area-badge">
+        Knowledge Area: <strong><%= displayName %></strong>
+      </p>
+      <% } %> <% if (systemId) { %>
+      <p class="system-badge">System: <strong><%= systemId %></strong></p>
+      <% } %>
+
+      <div class="results-summary">
+        <div class="score-display">
+          <h2>Your Score</h2>
+          <div class="score-box">
+            <p class="score-value"><%= score %> / <%= totalQuestions %></p>
+            <p class="score-percentage"><%= percentage %>%</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-details">
+        <h3>Answer Review</h3>
+        <% results.forEach((result, index) => { %>
+        <div
+          class="result-item <%= result.isCorrect ? 'correct' : 'incorrect' %>"
+        >
+          <div class="result-header">
+            <h4>Question <%= index + 1 %></h4>
+            <span
+              class="result-badge <%= result.isCorrect ? 'correct-badge' : 'incorrect-badge' %>"
+            >
+              <%= result.isCorrect ? '✓ Correct' : '✗ Incorrect' %>
+            </span>
+          </div>
+
+          <p class="result-question">
+            <strong>Question:</strong> <%= result.question %>
+          </p>
+
+          <p class="result-answer">
+            <strong>Your Answer:</strong><br />
+            <% if (result.userAnswer) { %>
+            <span class="answer-letter"
+              ><%= result.userAnswer.toUpperCase() %>:</span
+            >
+            <%= result.userAnswerText %> <% } else { %>
+            <em>No answer provided</em>
+            <% } %>
+          </p>
+
+          <% if (!result.isCorrect) { %>
+          <p class="result-correct-answer">
+            <strong>Correct Answer:</strong><br />
+            <span class="answer-letter"
+              ><%= result.correctAnswer.toUpperCase() %>:</span
+            >
+            <%= result.correctAnswerText %>
+          </p>
+          <% } %>
+        </div>
+        <% }); %>
+      </div>
+
+      <div class="button-group">
+        <a href="/" class="btn btn-reset">Back to Selection</a>
+        <% if (knowledgeArea) { %> <% let retakeUrl = '/quiz?area=' +
+        encodeURIComponent(knowledgeArea); %> <% if (systemId) { %> <% retakeUrl
+        += '&system=' + encodeURIComponent(systemId); %> <% } %>
+        <a href="<%= retakeUrl %>" class="btn btn-submit">Retake Quiz</a>
+        <% } else { %>
+        <a href="/quiz" class="btn btn-submit">Retake Quiz</a>
+        <% } %>
+      </div>
+    </div>
+  </body>
+</html>

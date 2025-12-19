@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <title>PDF Resources</title>
+    <style>
+      .pdf-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .pdf-header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .pdf-header h1 {
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      .pdf-header p {
+        color: #666;
+        font-size: 1.1em;
+      }
+
+      .folder-section {
+        margin-bottom: 40px;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .folder-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        font-size: 1.3em;
+        font-weight: 600;
+      }
+
+      .pdf-list {
+        padding: 20px;
+      }
+
+      .pdf-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        transition: all 0.3s ease;
+      }
+
+      .pdf-item:last-child {
+        border-bottom: none;
+      }
+
+      .pdf-item:hover {
+        background: #f9f9f9;
+        padding-left: 20px;
+      }
+
+      .pdf-name {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+      }
+
+      .pdf-icon {
+        font-size: 1.5em;
+        color: #c41e3a;
+      }
+
+      .pdf-title {
+        font-size: 1.05em;
+        color: #333;
+        text-decoration: none;
+        cursor: pointer;
+        font-weight: 500;
+      }
+
+      .pdf-title:hover {
+        color: #667eea;
+      }
+
+      .pdf-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn-view,
+      .btn-download {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9em;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .btn-view {
+        background: #667eea;
+        color: white;
+      }
+
+      .btn-view:hover {
+        background: #764ba2;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-download {
+        background: #f0f0f0;
+        color: #333;
+        border: 1px solid #ddd;
+      }
+
+      .btn-download:hover {
+        background: #e0e0e0;
+        transform: translateY(-2px);
+      }
+
+      .pdf-modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+      }
+
+      .pdf-modal.active {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .pdf-modal-content {
+        background: white;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 900px;
+        height: 85vh;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .pdf-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        border-bottom: 1px solid #eee;
+        background: #f9f9f9;
+      }
+
+      .pdf-modal-title {
+        font-size: 1.1em;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .pdf-modal-close {
+        background: none;
+        border: none;
+        font-size: 1.5em;
+        cursor: pointer;
+        color: #666;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .pdf-modal-close:hover {
+        color: #333;
+      }
+
+      .pdf-iframe {
+        flex: 1;
+        border: none;
+      }
+
+      .no-pdfs {
+        text-align: center;
+        padding: 60px 20px;
+        color: #666;
+      }
+
+      .no-pdfs h2 {
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      .back-button {
+        display: inline-block;
+        margin-bottom: 30px;
+        padding: 10px 20px;
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+      }
+
+      .back-button:hover {
+        background: #764ba2;
+      }
+
+      @media (max-width: 600px) {
+        .pdf-item {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+
+        .pdf-actions {
+          width: 100%;
+        }
+
+        .btn-view,
+        .btn-download {
+          flex: 1;
+          text-align: center;
+        }
+
+        .pdf-modal-content {
+          width: 95%;
+          height: 90vh;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="quizContainer">
+      <a href="/" class="back-button">← Back to Quiz</a>
+
+      <div class="pdf-header">
+        <h1>📚 PDF Resources</h1>
+        <p>
+          <% if (totalPdfs > 0) { %> <%= totalPdfs %> document<%= totalPdfs !==
+          1 ? 's' : '' %> available <% } else { %> No documents available <% }
+          %>
+        </p>
+      </div>
+
+      <% if (totalPdfs === 0) { %>
+      <div class="no-pdfs">
+        <h2>No PDFs Available</h2>
+        <p>Check back soon for resources!</p>
+      </div>
+      <% } else { %>
+      <div class="pdf-container">
+        <% Object.keys(pdfsByFolder).sort().forEach(folder => { %>
+        <div class="folder-section">
+          <div class="folder-header">📁 <%= folder %></div>
+          <div class="pdf-list">
+            <% pdfsByFolder[folder].forEach(pdf => { %>
+            <div class="pdf-item">
+              <div class="pdf-name">
+                <span class="pdf-icon">📄</span>
+                <span
+                  class="pdf-title"
+                  onclick="viewPdf('<%= pdf.fullPath %>', '<%= pdf.displayName %>')"
+                >
+                  <%= pdf.displayName %>
+                </span>
+              </div>
+              <div class="pdf-actions">
+                <button
+                  class="btn-view"
+                  onclick="viewPdf('<%= pdf.fullPath %>', '<%= pdf.displayName %>')"
+                >
+                  👁️ View
+                </button>
+                <a
+                  href="/pdfs/download/<%= encodeURIComponent(pdf.fullPath) %>"
+                  class="btn-download"
+                >
+                  ⬇️ Download
+                </a>
+              </div>
+            </div>
+            <% }); %>
+          </div>
+        </div>
+        <% }); %>
+      </div>
+      <% } %>
+    </div>
+
+    <!-- PDF Viewer Modal -->
+    <div class="pdf-modal" id="pdfModal">
+      <div class="pdf-modal-content">
+        <div class="pdf-modal-header">
+          <span class="pdf-modal-title" id="pdfTitle"></span>
+          <button class="pdf-modal-close" onclick="closePdfModal()">✕</button>
+        </div>
+        <iframe id="pdfIframe" class="pdf-iframe"></iframe>
+      </div>
+    </div>
+
+    <script>
+      function viewPdf(filePath, displayName) {
+        fetch("/pdfs/url/" + encodeURIComponent(filePath))
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById("pdfTitle").textContent = displayName;
+            document.getElementById("pdfIframe").src = data.url;
+            document.getElementById("pdfModal").classList.add("active");
+          })
+          .catch((error) => {
+            console.error("Error loading PDF:", error);
+            alert("Error loading PDF. Please try downloading instead.");
+          });
+      }
+
+      function closePdfModal() {
+        document.getElementById("pdfModal").classList.remove("active");
+        document.getElementById("pdfIframe").src = "";
+      }
+
+      // Close modal when clicking outside
+      document
+        .getElementById("pdfModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) {
+            closePdfModal();
+          }
+        });
+
+      // Close modal on Escape key
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          closePdfModal();
+        }
+      });
+    </script>
+  </body>
+</html>

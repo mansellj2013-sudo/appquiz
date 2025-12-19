@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <title>Quiz Application - Select Knowledge Area</title>
+  </head>
+  <body>
+    <div class="quizContainer">
+      <h1>Quiz Application</h1>
+      <p class="subtitle">Select a knowledge area to begin</p>
+
+      <% if (knowledgeAreas.length === 0) { %>
+      <div class="no-data">
+        <p>No questions available. Please import your MongoDB data first.</p>
+        <p>Run: <code>node migrate-new.js</code></p>
+      </div>
+      <% } else { %>
+      <div class="knowledge-areas">
+        <div class="area-option full-width">
+          <a href="/quiz" class="area-card all-questions">
+            <div class="area-header">
+              <h3>All Questions</h3>
+            </div>
+            <div class="area-count">
+              <span class="count-number"
+                ><%= Object.values(stats).reduce((a, b) => a + b, 0) %></span
+              >
+              <span class="count-label">questions</span>
+            </div>
+            <div class="area-description">
+              Test your knowledge across all areas
+            </div>
+            <div class="area-action">Start Quiz →</div>
+          </a>
+        </div>
+
+        <div class="area-option full-width">
+          <a href="/pdfs" class="area-card pdf-card">
+            <div class="area-header">
+              <h3>📚 PDF Resources</h3>
+            </div>
+            <div class="area-description">
+              Access study materials and documentation
+            </div>
+            <div class="area-action">View Resources →</div>
+          </a>
+        </div>
+
+        <% knowledgeAreas.forEach(area => { const count = stats[area] || 0;
+        const displayName = area.split('_').map(word =>
+        word.charAt(0).toUpperCase() + word.slice(1) ).join(' '); const systems
+        = systemsByArea[area] || []; %>
+        <div class="area-option">
+          <div class="area-card area-card-clickable" data-area="<%= area %>">
+            <div class="area-header">
+              <h3><%= displayName %></h3>
+              <% if (systems.length > 0) { %>
+              <span class="expand-icon">▼</span>
+              <% } %>
+            </div>
+            <div class="area-count">
+              <span class="count-number"><%= count %></span>
+              <span class="count-label"
+                ><%= count === 1 ? 'question' : 'questions' %></span
+              >
+            </div>
+            <% if (systems.length === 0) { %>
+            <div class="area-action">Start Quiz →</div>
+            <% } %>
+          </div>
+          <% if (systems && systems.length > 0) { %>
+          <div
+            class="systems-list"
+            id="systems-<%= area %>"
+            style="display: none"
+          >
+            <a
+              href="/quiz?area=<%= encodeURIComponent(area) %>"
+              class="system-option system-all"
+            >
+              <span class="system-name">All <%= displayName %></span>
+              <span class="system-count"><%= count %> questions</span>
+            </a>
+            <% systems.forEach(system => { const systemStats =
+            systemStatsByArea[area] || {}; const systemCount =
+            systemStats[system] || 0; %>
+            <a
+              href="/quiz?area=<%= encodeURIComponent(area) %>&system=<%=
+              encodeURIComponent(system) %>"
+              class="system-option"
+            >
+              <span class="system-name"><%= system %></span>
+              <span class="system-count"><%= systemCount %> questions</span>
+            </a>
+            <% }); %>
+          </div>
+          <% } %>
+        </div>
+        <% }); %>
+      </div>
+
+      <div class="stats-summary">
+        <h3>Quiz Statistics</h3>
+        <table class="stats-table">
+          <thead>
+            <tr>
+              <th>Knowledge Area</th>
+              <th>Questions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% knowledgeAreas.forEach(area => { %> <% const count = stats[area]
+            || 0; %> <% const displayName = area.split('_').map(word =>
+            word.charAt(0).toUpperCase() + word.slice(1)).join(' '); %>
+            <tr>
+              <td><%= displayName %></td>
+              <td class="count-cell"><%= count %></td>
+            </tr>
+            <% }); %>
+            <tr class="total-row">
+              <td><strong>Total</strong></td>
+              <td class="count-cell">
+                <strong
+                  ><%= Object.values(stats).reduce((a, b) => a + b, 0)
+                  %></strong
+                >
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <% } %>
+    </div>
+
+    <script>
+      // Handle expandable knowledge area cards
+      document.querySelectorAll(".area-card-clickable").forEach((card) => {
+        card.addEventListener("click", function () {
+          const area = this.getAttribute("data-area");
+          const systemsList = document.getElementById("systems-" + area);
+          const icon = this.querySelector(".expand-icon");
+
+          if (systemsList) {
+            const isHidden = systemsList.style.display === "none";
+            systemsList.style.display = isHidden ? "block" : "none";
+            if (icon) {
+              icon.style.transform = isHidden ? "rotate(180deg)" : "rotate(0)";
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
