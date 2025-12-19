@@ -54,7 +54,7 @@ const sessionSchema = new mongoose.Schema({
 
 const Session = mongoose.model("Session", sessionSchema);
 
-// Authentication middleware - validate session with MongoDB
+// Authentication middleware - validate session with MongoDB or gateway headers
 const authMiddleware = async (req, res, next) => {
   // Allow public routes without authentication
   const publicRoutes = ["/login"];
@@ -62,7 +62,18 @@ const authMiddleware = async (req, res, next) => {
     return next();
   }
 
-  // Get session ID from query param (from redirect) or from cookie
+  // CHECK 1: Check for gateway headers (x-session-user-id)
+  // These are sent by CleanBlogApp gateway via attachSessionInfo
+  const gatewayUserId = req.headers["x-session-user-id"];
+  const gatewayUserEmail = req.headers["x-session-user-email"];
+
+  if (gatewayUserId) {
+    console.log("[GATEWAY AUTH] User authenticated via gateway headers:", gatewayUserId);
+    req.user = { userId: gatewayUserId, email: gatewayUserEmail || null };
+    return next();
+  }
+
+  // CHECK 2: Fall back to local sessionId validation (original approach)
   let sessionId = req.query.sessionId || req.cookies?.sessionId;
 
   if (sessionId) {
