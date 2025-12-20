@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/app/css/style.css" />
+    <link rel="stylesheet" href="/css/style.css" />
     <title>PDF Resources</title>
     <style>
       .pdf-container {
@@ -246,7 +246,7 @@
   </head>
   <body>
     <div class="quizContainer">
-      <a href="/app/" class="back-button">← Back to Quiz</a>
+      <a href="/" class="back-button">← Back to Quiz</a>
 
       <div class="pdf-header">
         <h1>📚 PDF Resources</h1>
@@ -287,7 +287,7 @@
                   👁️ View
                 </button>
                 <a
-                  href="/app/pdfs/download/<%= encodeURIComponent(pdf.fullPath) %>"
+                  href="/pdfs/download/<%= encodeURIComponent(pdf.fullPath) %>"
                   class="btn-download"
                 >
                   ⬇️ Download
