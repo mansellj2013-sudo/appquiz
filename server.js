@@ -152,8 +152,11 @@ app.get("/login", (req, res) => {
 });
 
 // Routes
+// Mount routes at both / and /app for gateway compatibility
 app.use("/", quizRoutes);
+app.use("/app", quizRoutes);
 app.use("/pdfs", pdfRoutes);
+app.use("/app/pdfs", pdfRoutes);
 
 // 404 Handler
 app.use((req, res) => {
