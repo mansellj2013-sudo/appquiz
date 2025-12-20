@@ -44,6 +44,8 @@ app.set("views", path.join(__dirname, "views"));
 
 // Middleware
 app.use(express.static(path.join(__dirname, "public")));
+// Also serve static files from /app prefix (for CleanBlog gateway routing)
+app.use("/app", express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
@@ -75,8 +77,8 @@ const Session = mongoose.model("Session", sessionSchema);
 const authMiddleware = async (req, res, next) => {
   // Allow public routes and static files without authentication
   const publicRoutes = ["/login", "/css", "/js"];
-  const isPublic = publicRoutes.some(route => req.path.startsWith(route));
-  
+  const isPublic = publicRoutes.some((route) => req.path.startsWith(route));
+
   if (isPublic) {
     return next();
   }
