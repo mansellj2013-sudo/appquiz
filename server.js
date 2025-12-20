@@ -32,6 +32,11 @@ mongoose
 
     // Make quiz instance available to controllers via app.locals
     app.locals.quiz = quizInstance;
+
+    // Start server AFTER quiz data is loaded
+    app.listen(PORT, () => {
+      console.log(`Quiz Application running on http://localhost:${PORT}`);
+    });
   })
   .catch((err) => {
     console.error("MongoDB connection failed:", err);
@@ -188,9 +193,4 @@ app.use((err, req, res, next) => {
     error: "Something went wrong!",
     message: process.env.NODE_ENV === "development" ? err.message : "",
   });
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`Quiz Application running on http://localhost:${PORT}`);
 });
