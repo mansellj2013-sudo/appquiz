@@ -166,6 +166,11 @@ app.get("/login", (req, res) => {
   }
 });
 
+// Direct submit route handler (workaround for gateway routing)
+const quizController = require("./controllers/quizController");
+app.post("/submit", quizController.submitQuiz);
+app.post("/app/submit", quizController.submitQuiz);
+
 // Routes
 // Mount routes at both / and /app paths to handle direct access and gateway routing
 app.use("/", quizRoutes);
