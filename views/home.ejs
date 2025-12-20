@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/app/css/style.css" />
     <title>Quiz Application - Select Knowledge Area</title>
   </head>
   <body>
@@ -18,7 +18,7 @@
       <% } else { %>
       <div class="knowledge-areas">
         <div class="area-option full-width">
-          <a href="/quiz" class="area-card all-questions">
+          <a href="/app/quiz" class="area-card all-questions">
             <div class="area-header">
               <h3>All Questions</h3>
             </div>
@@ -36,7 +36,7 @@
         </div>
 
         <div class="area-option full-width">
-          <a href="/pdfs" class="area-card pdf-card">
+          <a href="/app/pdfs" class="area-card pdf-card">
             <div class="area-header">
               <h3>📚 PDF Resources</h3>
             </div>
@@ -76,7 +76,7 @@
             style="display: none"
           >
             <a
-              href="/quiz?area=<%= encodeURIComponent(area) %>"
+              href="/app/quiz?area=<%= encodeURIComponent(area) %>"
               class="system-option system-all"
             >
               <span class="system-name">All <%= displayName %></span>
@@ -86,7 +86,7 @@
             systemStatsByArea[area] || {}; const systemCount =
             systemStats[system] || 0; %>
             <a
-              href="/quiz?area=<%= encodeURIComponent(area) %>&system=<%= encodeURIComponent(system) %>"
+              href="/app/quiz?area=<%= encodeURIComponent(area) %>&system=<%= encodeURIComponent(system) %>"
               class="system-option"
             >
               <span class="system-name"><%= system %></span>
