@@ -44,6 +44,7 @@ app.set("views", path.join(__dirname, "views"));
 
 // Middleware
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/app", express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
@@ -59,14 +60,12 @@ app.use((req, res, next) => {
   next();
 });
 
-// Disable caching for HTML responses (EJS templates)
+// Aggressive cache-busting for all responses
 app.use((req, res, next) => {
-  res.set(
-    "Cache-Control",
-    "no-store, no-cache, must-revalidate, proxy-revalidate"
-  );
+  res.set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
   res.set("Pragma", "no-cache");
   res.set("Expires", "0");
+  res.set("Surrogate-Control", "no-store");
   next();
 });
 
