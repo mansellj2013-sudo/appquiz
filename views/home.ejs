@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <base href="/app/">
     <link rel="stylesheet" href="/css/style.css" />
     <title>Quiz Application - Select Knowledge Area</title>
   </head>
@@ -24,7 +23,9 @@
               <h3>All Questions</h3>
             </div>
             <div class="area-count">
-              <span class="count-number"><%= Object.values(stats).reduce((a, b) => a + b, 0) %></span>
+              <span class="count-number"
+                ><%= Object.values(stats).reduce((a, b) => a + b, 0) %></span
+              >
               <span class="count-label">questions</span>
             </div>
             <div class="area-description">
@@ -46,7 +47,10 @@
           </a>
         </div>
 
-        <% knowledgeAreas.forEach(area => { const count = stats[area] || 0; const displayName = area.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '); const systems = systemsByArea[area] || []; %>
+        <% knowledgeAreas.forEach(area => { const count = stats[area] || 0;
+        const displayName = area.split('_').map(word =>
+        word.charAt(0).toUpperCase() + word.slice(1)).join(' '); const systems =
+        systemsByArea[area] || []; %>
         <div class="area-option">
           <div class="area-card area-card-clickable" data-area="<%= area %>">
             <div class="area-header">
@@ -57,20 +61,34 @@
             </div>
             <div class="area-count">
               <span class="count-number"><%= count %></span>
-              <span class="count-label"><%= count === 1 ? 'question' : 'questions' %></span>
+              <span class="count-label"
+                ><%= count === 1 ? 'question' : 'questions' %></span
+              >
             </div>
             <% if (systems.length === 0) { %>
             <div class="area-action">Start Quiz →</div>
             <% } %>
           </div>
           <% if (systems && systems.length > 0) { %>
-          <div class="systems-list" id="systems-<%= area %>" style="display: none">
-            <a href="/quiz?area=<%= encodeURIComponent(area) %>" class="system-option system-all">
+          <div
+            class="systems-list"
+            id="systems-<%= area %>"
+            style="display: none"
+          >
+            <a
+              href="/quiz?area=<%= encodeURIComponent(area) %>"
+              class="system-option system-all"
+            >
               <span class="system-name">All <%= displayName %></span>
               <span class="system-count"><%= count %> questions</span>
             </a>
-            <% systems.forEach(system => { const systemStats = systemStatsByArea[area] || {}; const systemCount = systemStats[system] || 0; %>
-            <a href="/quiz?area=<%= encodeURIComponent(area) %>&system=<%= encodeURIComponent(system) %>" class="system-option">
+            <% systems.forEach(system => { const systemStats =
+            systemStatsByArea[area] || {}; const systemCount =
+            systemStats[system] || 0; %>
+            <a
+              href="/quiz?area=<%= encodeURIComponent(area) %>&system=<%= encodeURIComponent(system) %>"
+              class="system-option"
+            >
               <span class="system-name"><%= system %></span>
               <span class="system-count"><%= systemCount %> questions</span>
             </a>
@@ -91,7 +109,9 @@
             </tr>
           </thead>
           <tbody>
-            <% knowledgeAreas.forEach(area => { %> <% const count = stats[area] || 0; %> <% const displayName = area.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '); %>
+            <% knowledgeAreas.forEach(area => { %> <% const count = stats[area]
+            || 0; %> <% const displayName = area.split('_').map(word =>
+            word.charAt(0).toUpperCase() + word.slice(1)).join(' '); %>
             <tr>
               <td><%= displayName %></td>
               <td class="count-cell"><%= count %></td>
@@ -100,7 +120,10 @@
             <tr class="total-row">
               <td><strong>Total</strong></td>
               <td class="count-cell">
-                <strong><%= Object.values(stats).reduce((a, b) => a + b, 0) %></strong>
+                <strong
+                  ><%= Object.values(stats).reduce((a, b) => a + b, 0)
+                  %></strong
+                >
               </td>
             </tr>
           </tbody>
@@ -129,4 +152,3 @@
     </script>
   </body>
 </html>
-
