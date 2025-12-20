@@ -76,7 +76,7 @@ const Session = mongoose.model("Session", sessionSchema);
 // Authentication middleware - validate session with MongoDB or gateway headers
 const authMiddleware = async (req, res, next) => {
   // Allow public routes and static files without authentication
-  const publicRoutes = ["/login", "/css", "/js"];
+  const publicRoutes = ["/login", "/css", "/js", "/app/css", "/app/js"];
   const isPublic = publicRoutes.some((route) => req.path.startsWith(route));
 
   if (isPublic) {
