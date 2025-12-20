@@ -163,9 +163,11 @@ app.get("/login", (req, res) => {
 });
 
 // Routes
-// CleanBlog gateway strips /app prefix before routing, so routes should be at / only
+// Mount routes at both / and /app paths to handle direct access and gateway routing
 app.use("/", quizRoutes);
+app.use("/app", quizRoutes);
 app.use("/pdfs", pdfRoutes);
+app.use("/app/pdfs", pdfRoutes);
 
 // 404 Handler
 app.use((req, res) => {
