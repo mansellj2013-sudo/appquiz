@@ -91,7 +91,7 @@ const Session = mongoose.model("Session", sessionSchema);
 // Authentication middleware - validate session with MongoDB or gateway headers
 const authMiddleware = async (req, res, next) => {
   // Allow public routes and static files without authentication
-  const publicRoutes = ["/login", "/css", "/js"];
+  const publicRoutes = ["/login", "/css", "/js", "/submit", "/app/submit"];
   const isPublic = publicRoutes.some((route) => req.path.startsWith(route));
 
   if (isPublic) {
@@ -168,7 +168,9 @@ app.get("/login", (req, res) => {
 
 // Direct submit route handler (workaround for gateway routing)
 const quizController = require("./controllers/quizController");
-console.log("[SERVER] Registering explicit POST /submit and /app/submit handlers");
+console.log(
+  "[SERVER] Registering explicit POST /submit and /app/submit handlers"
+);
 app.post("/submit", quizController.submitQuiz);
 app.post("/app/submit", quizController.submitQuiz);
 console.log("[SERVER] Explicit POST handlers registered");

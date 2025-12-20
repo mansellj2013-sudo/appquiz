@@ -119,11 +119,9 @@ exports.submitQuiz = (req, res) => {
     console.log("[submitQuiz] Results rendered successfully");
   } catch (error) {
     console.error("[submitQuiz] Error:", error);
-    res
-      .status(500)
-      .json({
-        error: "Error processing quiz submission",
-        details: error.message,
-      });
+    res.status(500).json({
+      error: "Error processing quiz submission",
+      details: error.message,
+    });
   }
 };
