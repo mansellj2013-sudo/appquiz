@@ -59,6 +59,17 @@ app.use((req, res, next) => {
   next();
 });
 
+// Disable caching for HTML responses (EJS templates)
+app.use((req, res, next) => {
+  res.set(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate"
+  );
+  res.set("Pragma", "no-cache");
+  res.set("Expires", "0");
+  next();
+});
+
 // Session Schema for validation
 const sessionSchema = new mongoose.Schema({
   sessionId: { type: String, unique: true, required: true },
