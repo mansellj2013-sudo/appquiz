@@ -51,9 +51,11 @@ exports.renderQuiz = (req, res) => {
 
 exports.submitQuiz = (req, res) => {
   try {
+    console.log("[submitQuiz] Starting quiz submission");
     const quiz = req.app.locals.quiz;
 
     if (!quiz) {
+      console.log("[submitQuiz] Quiz not loaded");
       return res.status(503).json({ error: "Quiz data not loaded yet" });
     }
 
@@ -61,23 +63,22 @@ exports.submitQuiz = (req, res) => {
     const knowledgeArea = req.body.knowledgeArea || null;
     const systemId = req.body.systemId || null;
 
-    console.log("Received answers:", answers);
-    console.log("Knowledge area:", knowledgeArea);
-    console.log("System ID:", systemId);
+    console.log("[submitQuiz] Received answers:", Object.keys(answers));
+    console.log("[submitQuiz] Knowledge area:", knowledgeArea);
+    console.log("[submitQuiz] System ID:", systemId);
 
     const questions = quiz.getQuestionsByKnowledgeAreaAndSystem(
       knowledgeArea,
       systemId
     );
 
+    console.log("[submitQuiz] Retrieved questions:", questions.length);
+
     let score = 0;
     const results = [];
 
     questions.forEach((question) => {
       const userAnswerIndex = parseInt(answers[`question_${question.id}`], 10);
-      console.log(
-        `Question ${question.id}: userAnswer = ${userAnswerIndex}, correctAnswer = ${question.correctAnswerIndex}`
-      );
 
       const isCorrect = quiz.checkAnswer(question.id, userAnswerIndex);
 
@@ -102,6 +103,8 @@ exports.submitQuiz = (req, res) => {
       });
     });
 
+    console.log("[submitQuiz] Processed results, score:", score);
+
     res.render("results", {
       score: score,
       totalQuestions: questions.length,
@@ -110,8 +113,10 @@ exports.submitQuiz = (req, res) => {
       knowledgeArea: knowledgeArea,
       systemId: systemId,
     });
+    
+    console.log("[submitQuiz] Results rendered successfully");
   } catch (error) {
-    console.error("Error submitting quiz:", error);
-    throw error;
+    console.error("[submitQuiz] Error:", error);
+    res.status(500).json({ error: "Error processing quiz submission", details: error.message });
   }
 };
