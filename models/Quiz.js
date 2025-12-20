@@ -1,62 +1,33 @@
 // Quiz Model - Contains quiz data and logic
-const Database = require("better-sqlite3");
-const path = require("path");
+const QuizData = require("./QuizData");
 
 class Quiz {
   constructor() {
-    // Initialize database connection
-    this.dbPath = path.join(__dirname, "../database/quiz.db");
-    this.db = new Database(this.dbPath);
-    this.db.pragma("foreign_keys = ON");
-
-    // Load questions from SQLite database
-    this.questions = this.loadQuestions();
+    // Initialize with empty questions array
+    // Questions will be loaded from MongoDB via loadQuestions()
+    this.questions = [];
   }
 
-  loadQuestions() {
+  async loadQuestions() {
     try {
-      const questions = this.db
-        .prepare(
-          `
-        SELECT 
-          q.id,
-          q.question,
-          q.knowledge_area,
-          q.system_id,
-          ak.answer_key
-        FROM questions q
-        LEFT JOIN answer_keys ak ON q.id = ak.question_id
-        ORDER BY q.id
-      `
-        )
-        .all();
+      const documents = await QuizData.find({}).sort({ created_at: 1 });
 
-      // For each question, get all choices
-      const questionsWithChoices = questions.map((q) => {
-        const choices = this.db
-          .prepare(
-            `
-          SELECT choice_index, choice_text 
-          FROM choices 
-          WHERE question_id = ? 
-          ORDER BY choice_index
-        `
-          )
-          .all(q.id);
-
+      // Map MongoDB documents to quiz question format
+      this.questions = documents.map((doc) => {
         return {
-          id: q.id,
-          question: q.question,
-          knowledge_area: q.knowledge_area,
-          system_id: q.system_id,
-          choices: choices.map((c) => c.choice_text),
-          correctAnswerIndex: q.answer_key,
+          id: doc._id.toString(), // Use MongoDB ObjectId as string
+          question: doc.question,
+          knowledge_area: doc.knowledge_area,
+          system_id: doc.system_id,
+          choices: doc.choices,
+          correctAnswerIndex: doc.answer_key,
         };
       });
 
-      return questionsWithChoices;
+      console.log(`Loaded ${this.questions.length} questions from MongoDB`);
+      return this.questions;
     } catch (error) {
-      console.error("Error loading questions from database:", error);
+      console.error("Error loading questions from MongoDB:", error);
       return [];
     }
   }

@@ -5,17 +5,30 @@ const path = require("path");
 // Initialize Google Cloud Storage
 let storage;
 try {
-  const keyPath = path.join(__dirname, "../google-cloud-key.json");
-  console.log(`[PDF Controller] Loading credentials from: ${keyPath}`);
   console.log(
     `[PDF Controller] Project ID: ${process.env.GOOGLE_CLOUD_PROJECT}`
   );
   console.log(`[PDF Controller] Bucket: ${process.env.GOOGLE_CLOUD_BUCKET}`);
 
-  storage = new Storage({
+  let storageConfig = {
     projectId: process.env.GOOGLE_CLOUD_PROJECT,
-    keyFilename: keyPath,
-  });
+  };
+
+  // Check for credentials from environment variable (Heroku)
+  if (process.env.GOOGLE_CLOUD_KEY_JSON) {
+    console.log(
+      "[PDF Controller] Loading credentials from GOOGLE_CLOUD_KEY_JSON environment variable"
+    );
+    const credentials = JSON.parse(process.env.GOOGLE_CLOUD_KEY_JSON);
+    storageConfig.credentials = credentials;
+  } else {
+    // Fall back to local file (development)
+    const keyPath = path.join(__dirname, "../google-cloud-key.json");
+    console.log(`[PDF Controller] Loading credentials from: ${keyPath}`);
+    storageConfig.keyFilename = keyPath;
+  }
+
+  storage = new Storage(storageConfig);
   console.log("[PDF Controller] Google Cloud Storage initialized successfully");
 } catch (error) {
   console.error(

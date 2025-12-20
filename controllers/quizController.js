@@ -1,9 +1,13 @@
 // Quiz Controller - Handles quiz logic and views
-const Quiz = require("../models/Quiz");
-
-const quiz = new Quiz();
 
 exports.renderHome = (req, res) => {
+  // Get quiz instance from app.locals (set in server.js after MongoDB connects)
+  const quiz = req.app.locals.quiz;
+
+  if (!quiz) {
+    return res.status(503).json({ error: "Quiz data not loaded yet" });
+  }
+
   const knowledgeAreas = quiz.getAllKnowledgeAreas();
   const stats = quiz.getKnowledgeAreaStats();
 
@@ -24,6 +28,12 @@ exports.renderHome = (req, res) => {
 };
 
 exports.renderQuiz = (req, res) => {
+  const quiz = req.app.locals.quiz;
+
+  if (!quiz) {
+    return res.status(503).json({ error: "Quiz data not loaded yet" });
+  }
+
   const knowledgeArea = req.query.area || null;
   const systemId = req.query.system || null;
   const questions = quiz.getQuestionsByKnowledgeAreaAndSystem(
@@ -41,6 +51,12 @@ exports.renderQuiz = (req, res) => {
 
 exports.submitQuiz = (req, res) => {
   try {
+    const quiz = req.app.locals.quiz;
+
+    if (!quiz) {
+      return res.status(503).json({ error: "Quiz data not loaded yet" });
+    }
+
     const answers = req.body;
     const knowledgeArea = req.body.knowledgeArea || null;
     const systemId = req.body.systemId || null;

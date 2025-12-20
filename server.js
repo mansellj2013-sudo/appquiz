@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const quizRoutes = require("./routes/quizRoutes");
 const pdfRoutes = require("./routes/pdfRoutes");
+const Quiz = require("./models/Quiz");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,10 +17,26 @@ const MONGODB_URI =
   process.env.MONGODB_URI ||
   "mongodb+srv://user:password@cluster.mongodb.net/db";
 
-// Connect to MongoDB
-mongoose.connect(MONGODB_URI).catch((err) => {
-  console.error("MongoDB connection failed:", err);
-});
+// Global quiz instance
+let quizInstance = null;
+
+// Connect to MongoDB and load quiz data
+mongoose
+  .connect(MONGODB_URI)
+  .then(async () => {
+    console.log("MongoDB connected successfully");
+
+    // Initialize and load quiz data
+    quizInstance = new Quiz();
+    await quizInstance.loadQuestions();
+
+    // Make quiz instance available to controllers via app.locals
+    app.locals.quiz = quizInstance;
+  })
+  .catch((err) => {
+    console.error("MongoDB connection failed:", err);
+    process.exit(1);
+  });
 
 // Set view engine to EJS
 app.set("view engine", "ejs");
@@ -68,7 +85,10 @@ const authMiddleware = async (req, res, next) => {
   const gatewayUserEmail = req.headers["x-session-user-email"];
 
   if (gatewayUserId) {
-    console.log("[GATEWAY AUTH] User authenticated via gateway headers:", gatewayUserId);
+    console.log(
+      "[GATEWAY AUTH] User authenticated via gateway headers:",
+      gatewayUserId
+    );
     req.user = { userId: gatewayUserId, email: gatewayUserEmail || null };
     return next();
   }
