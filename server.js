@@ -168,8 +168,10 @@ app.get("/login", (req, res) => {
 
 // Direct submit route handler (workaround for gateway routing)
 const quizController = require("./controllers/quizController");
+console.log("[SERVER] Registering explicit POST /submit and /app/submit handlers");
 app.post("/submit", quizController.submitQuiz);
 app.post("/app/submit", quizController.submitQuiz);
+console.log("[SERVER] Explicit POST handlers registered");
 
 // Routes
 // Mount routes at both / and /app paths to handle direct access and gateway routing

@@ -52,10 +52,12 @@ exports.renderQuiz = (req, res) => {
 exports.submitQuiz = (req, res) => {
   try {
     console.log("[submitQuiz] Starting quiz submission");
+    console.log("[submitQuiz] Path:", req.path, "Method:", req.method);
+    console.log("[submitQuiz] Body keys:", Object.keys(req.body));
     const quiz = req.app.locals.quiz;
 
     if (!quiz) {
-      console.log("[submitQuiz] Quiz not loaded");
+      console.log("[submitQuiz] Quiz not loaded - quiz is", typeof quiz);
       return res.status(503).json({ error: "Quiz data not loaded yet" });
     }
 
