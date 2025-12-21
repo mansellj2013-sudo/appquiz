@@ -52,12 +52,9 @@ exports.renderQuiz = (req, res) => {
 exports.submitQuiz = (req, res) => {
   try {
     console.log("[submitQuiz] Starting quiz submission");
-    console.log("[submitQuiz] Path:", req.path, "Method:", req.method);
-    console.log("[submitQuiz] Body keys:", Object.keys(req.body));
     const quiz = req.app.locals.quiz;
 
     if (!quiz) {
-      console.log("[submitQuiz] Quiz not loaded - quiz is", typeof quiz);
       return res.status(503).json({ error: "Quiz data not loaded yet" });
     }
 
@@ -65,30 +62,39 @@ exports.submitQuiz = (req, res) => {
     const knowledgeArea = req.body.knowledgeArea || null;
     const systemId = req.body.systemId || null;
 
-    console.log("[submitQuiz] Received answers:", Object.keys(answers));
-    console.log("[submitQuiz] Knowledge area:", knowledgeArea);
-    console.log("[submitQuiz] System ID:", systemId);
-
     const questions = quiz.getQuestionsByKnowledgeAreaAndSystem(
       knowledgeArea,
       systemId
     );
 
-    console.log("[submitQuiz] Retrieved questions:", questions.length);
+    // Create a lookup map for O(1) access instead of O(n) search
+    const questionMap = {};
+    questions.forEach((q) => {
+      questionMap[q.id] = q;
+    });
 
     let score = 0;
     const results = [];
+    const choiceLetters = ["a", "b", "c", "d"];
 
-    questions.forEach((question) => {
-      const userAnswerIndex = parseInt(answers[`question_${question.id}`], 10);
+    // Process all answers in one efficient pass
+    for (const [key, value] of Object.entries(answers)) {
+      // Skip non-question fields
+      if (!key.startsWith("question_")) continue;
 
-      const isCorrect = quiz.checkAnswer(question.id, userAnswerIndex);
+      const questionId = key.replace("question_", "");
+      const question = questionMap[questionId];
+
+      // Skip if question not found
+      if (!question) continue;
+
+      const userAnswerIndex = parseInt(value, 10);
+      const isCorrect = question.correctAnswerIndex === userAnswerIndex;
 
       if (isCorrect) {
         score++;
       }
 
-      const choiceLetters = ["a", "b", "c", "d"];
       const userChoiceLetter = choiceLetters[userAnswerIndex] || "?";
       const correctChoiceLetter =
         choiceLetters[question.correctAnswerIndex] || "?";
@@ -103,9 +109,7 @@ exports.submitQuiz = (req, res) => {
         correctAnswerText: question.choices[question.correctAnswerIndex],
         isCorrect: isCorrect,
       });
-    });
-
-    console.log("[submitQuiz] Processed results, score:", score);
+    }
 
     res.render("results", {
       score: score,
@@ -115,8 +119,6 @@ exports.submitQuiz = (req, res) => {
       knowledgeArea: knowledgeArea,
       systemId: systemId,
     });
-
-    console.log("[submitQuiz] Results rendered successfully");
   } catch (error) {
     console.error("[submitQuiz] Error:", error);
     res.status(500).json({
