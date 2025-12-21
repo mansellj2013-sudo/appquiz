@@ -17,6 +17,13 @@ const MONGODB_URI =
   process.env.MONGODB_URI ||
   "mongodb+srv://user:password@cluster.mongodb.net/db";
 
+// Increase request timeout to 120 seconds to handle long-running requests
+app.use((req, res, next) => {
+  req.setTimeout(120000);
+  res.setTimeout(120000);
+  next();
+});
+
 // Global quiz instance
 let quizInstance = null;
 
