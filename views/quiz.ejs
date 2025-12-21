@@ -27,7 +27,7 @@
         <a href="/app/" class="btn btn-reset">Back to Selection</a>
       </div>
       <% } else { %>
-      <form method="POST" action="/app/submit">
+      <form id="quizForm">
         <input
           type="hidden"
           name="knowledgeArea"
@@ -61,10 +61,62 @@
         <% }); %>
 
         <div class="button-group">
-          <button type="submit" class="btn btn-submit">Submit Quiz</button>
+          <button
+            type="button"
+            class="btn btn-submit"
+            onclick="submitQuizForm()"
+          >
+            Submit Quiz
+          </button>
           <a href="/app/" class="btn btn-reset">Back to Selection</a>
         </div>
       </form>
+
+      <script>
+        function submitQuizForm() {
+          const form = document.getElementById("quizForm");
+          const formData = new FormData(form);
+
+          // Convert FormData to JSON object
+          const data = {
+            knowledgeArea: formData.get("knowledgeArea"),
+            systemId: formData.get("systemId"),
+          };
+
+          // Extract all question answers
+          for (const [key, value] of formData.entries()) {
+            if (key.startsWith("question_")) {
+              data[key] = value;
+            }
+          }
+
+          // Show loading indicator
+          document.querySelector(".btn-submit").disabled = true;
+          document.querySelector(".btn-submit").textContent = "Submitting...";
+
+          // Send as JSON via fetch
+          fetch("/app/submit", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => {
+              if (!response.ok) throw new Error("Network response was not ok");
+              return response.text();
+            })
+            .then((html) => {
+              document.documentElement.innerHTML = html;
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              alert("Error submitting quiz. Please try again.");
+              document.querySelector(".btn-submit").disabled = false;
+              document.querySelector(".btn-submit").textContent = "Submit Quiz";
+            });
+        }
+      </script>
       <% } %>
     </div>
   </body>
