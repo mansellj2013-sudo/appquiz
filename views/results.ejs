@@ -13,30 +13,6 @@
     <title>Quiz Results</title>
   </head>
   <body>
-    <div
-      style="
-        background-color: #f8f9fa;
-        padding: 12px 0;
-        border-bottom: 1px solid #dee2e6;
-        margin-bottom: 30px;
-      "
-    >
-      <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px">
-        <a
-          href="/"
-          style="
-            padding: 8px 16px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            font-weight: 500;
-            display: inline-block;
-          "
-          >← Back to Blog</a
-        >
-      </div>
-    </div>
     <nav
       class="navbar"
       style="
@@ -127,7 +103,7 @@
 
       <div class="button-group">
         <a href="/app/" class="btn btn-reset">Back to Selection</a>
-        <% if (knowledgeArea) { %> <% let retakeUrl = '/quiz?area=' +
+        <% if (knowledgeArea) { %> <% let retakeUrl = '/app/quiz?area=' +
         encodeURIComponent(knowledgeArea); %> <% if (systemId) { %> <% retakeUrl
         += '&system=' + encodeURIComponent(systemId); %> <% } %>
         <a href="<%= retakeUrl %>" class="btn btn-submit">Retake Quiz</a>
