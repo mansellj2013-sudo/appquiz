@@ -11,9 +11,25 @@
     <meta http-equiv="Expires" content="0" />
     <link rel="stylesheet" href="/app/css/style.css" />
     <title>Quiz Application - Select Knowledge Area</title>
+    <style>
+      .back-button {
+        display: inline-block;
+        margin-bottom: 30px;
+        padding: 10px 20px;
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+      }
+      .back-button:hover {
+        background: #764ba2;
+      }
+    </style>
   </head>
   <body>
     <div class="quizContainer">
+      <a href="/" class="back-button">← Back to Gateway</a>
       <h1>Quiz Application</h1>
       <p class="subtitle">Select a knowledge area to begin</p>
       <% if (knowledgeAreas.length === 0) { %>
