@@ -34,7 +34,7 @@
       }
 
       .folder-section {
-        margin-bottom: 40px;
+        margin-bottom: 20px;
         background: white;
         border-radius: 10px;
         overflow: hidden;
@@ -44,13 +44,41 @@
       .folder-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
-        padding: 20px;
-        font-size: 1.3em;
+        padding: 15px 20px;
+        font-size: 1.1em;
         font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        user-select: none;
+        transition: all 0.3s ease;
+      }
+
+      .folder-header:hover {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+      }
+
+      .folder-toggle {
+        font-size: 1.2em;
+        transition: transform 0.3s ease;
+        display: inline-block;
+      }
+
+      .folder-toggle.open {
+        transform: rotate(180deg);
       }
 
       .pdf-list {
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease, padding 0.3s ease;
+      }
+
+      .pdf-list.open {
         padding: 20px;
+        max-height: 2000px;
       }
 
       .pdf-item {
@@ -270,10 +298,16 @@
       </div>
       <% } else { %>
       <div class="pdf-container">
-        <% Object.keys(pdfsByFolder).sort().forEach(folder => { %>
+        <% Object.keys(pdfsByFolder).sort().forEach((folder, index) => { %>
         <div class="folder-section">
-          <div class="folder-header">📁 <%= folder %></div>
-          <div class="pdf-list">
+          <div
+            class="folder-header"
+            onclick="toggleFolder(this, 'folder-<%= index %>')"
+          >
+            <span>📁 <%= folder %> (<%= pdfsByFolder[folder].length %>)</span>
+            <span class="folder-toggle">▼</span>
+          </div>
+          <div class="pdf-list" id="folder-<%= index %>">
             <% pdfsByFolder[folder].forEach(pdf => { %>
             <div class="pdf-item">
               <div class="pdf-name">
@@ -320,6 +354,14 @@
     </div>
 
     <script>
+      function toggleFolder(headerElement, folderId) {
+        const pdfList = document.getElementById(folderId);
+        const toggle = headerElement.querySelector(".folder-toggle");
+
+        pdfList.classList.toggle("open");
+        toggle.classList.toggle("open");
+      }
+
       function viewPdf(filePath, displayName) {
         fetch("/app/pdfs/url/" + encodeURIComponent(filePath))
           .then((response) => response.json())
